@@ -1,0 +1,242 @@
+﻿@inject SupermarketWeb.Data.Services.GlobalService GlobalService
+@inject IJSRuntime JSRuntime
+<!-- SIDEBAR - START -->
+<div class="page-sidebar ">
+
+    <!-- MAIN MENU - START -->
+    <div class="page-sidebar-wrapper" id="main-menu-wrapper">
+
+        <!-- USER INFO - START -->
+        <div class="profile-info row">
+
+            <div class="profile-image col-md-4 col-sm-4 col-xs-4">
+                <a href="ui-profile.html">
+                    <img src="assets/images/user_profile.jpeg" class="img-responsive img-circle">
+                </a>
+            </div>
+
+            <div class="profile-details col-md-8 col-sm-8 col-xs-8">
+
+                <h3>
+                    <NavLink href="Profile">@GlobalService.LoggedUser</NavLink>
+
+                        <!-- Available statuses: online, idle, busy, away and offline -->
+                        <span class="profile-status online"></span>
+                    </h3>
+
+                    <p class="profile-title">@GlobalService.LoggedUserLevel</p>
+
+            </div>
+
+        </div>
+        <!-- USER INFO - END -->
+
+
+
+        <ul class='wraplist'>
+
+
+            <li class="">
+                <NavLink href="Home">
+                    <i class="fa fa-dashboard"></i>
+                    <span class="title">Dashboard</span>
+                </NavLink>
+            </li>
+            @if (GlobalService.LoggedUserLevel == "Admin")
+            {
+                <li class="">
+                    <a href="javascript:;">
+                        <i class="fa fa-sitemap"></i>
+                        <span class="title">Stores Management</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <NavLink class="" href="/Stores" @onclick="ReloadPage">Stores</NavLink>
+                        </li>
+                    </ul>
+                </li>
+            }
+            @if (GlobalService.LoggedUserLevel == "Supplier" || GlobalService.LoggedUserLevel == "Admin")
+            {
+                <li class="">
+                    <a href="javascript:;">
+                        <i class="fa fa-sitemap"></i>
+                        <span class="title">Department Management</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <NavLink class="" href="/Departments" @onclick="ReloadPage">Departments</NavLink>
+                        </li>
+                    </ul>
+                </li>
+            }
+            @if (GlobalService.LoggedUserLevel == "Supplier" || GlobalService.LoggedUserLevel == "Admin" || GlobalService.LoggedUserLevel == "Manager" || GlobalService.LoggedUserLevel == "Owner")
+            {
+                <li class="">
+                    <a href="javascript:;">
+                        <i class="fa fa-cubes"></i>
+                        <span class="title">Products Management</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        @if (GlobalService.LoggedUserLevel == "Supplier" || GlobalService.LoggedUserLevel == "Admin" || GlobalService.LoggedUserLevel == "Manager" || GlobalService.LoggedUserLevel == "Owner")
+                        {
+                            <li>
+                                <NavLink class="" href="/Products" @onclick="ReloadPage">All Products</NavLink>
+                            </li>
+                        }
+                        @if ((GlobalService.LoggedUserLevel == "Manager" || GlobalService.LoggedUserLevel == "Owner") && GlobalService.StoreType == "STORE")
+                        {
+                            <li>
+                                <NavLink class="" href="/Ecommerce" @onclick="ReloadPage">Ecommerce</NavLink>
+                            </li>
+                        }
+                    </ul>
+                </li>
+
+            }
+            @if (GlobalService.LoggedUserLevel == "Manager" && GlobalService.LoggedUserLevel == "Owner" || GlobalService.LoggedUserLevel == "Supplier")
+            {
+                <li class="">
+                    <a href="javascript:;">
+                        <i class="fa fa-dollar "></i>
+                        <span class="title">Billing Management</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        @if (GlobalService.LoggedUserLevel == "Manager" && GlobalService.LoggedUserLevel == "Owner")
+                        {
+                            <li>
+                                <NavLink class="" href="/Customer-Invoice" @onclick="ReloadPage">All Customer Invoices</NavLink>
+                            </li>
+                        }
+                        @if (GlobalService.LoggedUserLevel == "Supplier")
+                        {
+                            <li>
+                                <NavLink class="" href="/Store-Invoice" @onclick="ReloadPage">All Store Invoice</NavLink>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+            @if (GlobalService.LoggedUserLevel == "Manager" || GlobalService.LoggedUserLevel == "Owner" || GlobalService.LoggedUserLevel == "Cashier" && GlobalService.StoreType != "DRUG")
+            {
+                <li class="">
+                    <a href="javascript:;">
+                        <i class="fa fa-users"></i>
+                        <span class="title">Customers Management</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <NavLink class="" href="/Customers" @onclick="ReloadPage">All Customers</NavLink>
+                        </li>
+                        <li>
+                            <NavLink class="" href="/Create-Customer-Order" @onclick="ReloadPage">Create Customer Order</NavLink>
+                        </li>
+                    </ul>
+                </li>
+            }
+            @if (GlobalService.LoggedUserLevel != "Admin")
+            {
+                <li class="">
+                    <a href="javascript:;">
+                        <i class="fa fa-shopping-cart"></i>
+                        <span class="title">Orders Management</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        @if (GlobalService.LoggedUserLevel == "Owner" || GlobalService.LoggedUserLevel == "Manager")
+                        {
+                            <li>
+                                <a class="" href="/Customer-Orders" @onclick="ReloadPage">All Customer Orders</a>
+                            </li>
+                        }
+                        @if (GlobalService.LoggedUserLevel == "Supplier")
+                        {
+                            <li>
+                                <NavLink class="" href="/Store-Orders" @onclick="ReloadPage">All Store Orders</NavLink>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+            @if (GlobalService.LoggedUserLevel == "Owner" || GlobalService.LoggedUserLevel == "Manager")
+            {
+                <li class="">
+                    <a href="javascript:;">
+                        <i class="fa fa-user"></i>
+                        <span class="title">Expenses Management</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        <li>
+                            <NavLink class="" href="/Store/Expensives" @onclick="ReloadPage">All Expenses</NavLink>
+                        </li>
+                    </ul>
+                </li>
+            }
+            @if (GlobalService.LoggedUserLevel == "Owner" || GlobalService.LoggedUserLevel == "Manager" || GlobalService.LoggedUserLevel == "Admin")
+            {
+                <li class="">
+                    <a href="javascript:;">
+                        <i class="fa fa-user"></i>
+                        <span class="title">Users Management</span>
+                        <span class="arrow "></span>
+                    </a>
+                    <ul class="sub-menu">
+                        @if (GlobalService.LoggedUserLevel == "Owner" || GlobalService.LoggedUserLevel == "Manager")
+                        {
+                            <li>
+                                <NavLink class="" href="/Users" @onclick="ReloadPage">All Users</NavLink>
+                            </li>
+                        }
+                        <li>
+                            <NavLink class="" href="/Supplier/Users" @onclick="ReloadPage">All Suppliers</NavLink>
+                        </li>
+                    </ul>
+                </li>
+            }
+        </ul>
+
+    </div>
+    <!-- MAIN MENU - END -->
+    @if (GlobalService.LoggedUserLevel != "Admin" && GlobalService.LoggedUserLevel != "Supplier")
+    {
+        <div class="project-info">
+
+            <div class="block1">
+                <div class="data">
+                    <span class='title'>Orders</span>
+                    <span class='total'>545</span>
+                </div>
+                <div class="graph">
+                    <span class="sidebar_orders">...</span>
+                </div>
+            </div>
+
+            <div class="block2">
+                <div class="data">
+                    <span class='title'>Customers</span>
+                    <span class='total'>3146</span>
+                </div>
+                <div class="graph">
+                    <span class="sidebar_visitors">...</span>
+                </div>
+            </div>
+
+        </div>
+    }
+
+
+</div>
+<!--  SIDEBAR - END -->
+@code {
+    private async Task ReloadPage()
+    {
+        // Invoke JavaScript function to reload the page
+        await JSRuntime.InvokeVoidAsync("reloadPage");
+    }
+}

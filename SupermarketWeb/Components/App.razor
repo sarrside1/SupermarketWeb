@@ -1,0 +1,41 @@
+﻿@inject NavigationManager NavigationManager
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <HeadOutlet />
+</head>
+
+<body class="@bodyClass">
+    <Routes />
+    <script src="_framework/blazor.web.js"></script>
+    @code {
+        private string bodyClass;
+
+        protected override void OnInitialized()
+        {
+            // Get the current URI
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+
+            // Extract the path from the URI
+            var path = uri.GetComponents(UriComponents.Path, UriFormat.Unescaped);
+
+            // Customize the class based on the current component or path
+            if (path.Contains("Login") || path.Contains("Supplier/Login"))
+            {
+                bodyClass = "login_page";
+            }
+            else
+            {
+                // Add logic for other components if needed
+                bodyClass = " ";
+            }
+        }
+    }
+</body>
+
+</html>

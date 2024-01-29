@@ -1,0 +1,16 @@
+﻿@page "/Logout"
+@inject IJSRuntime Js
+@inject NavigationManager NavigationManager
+@inject Data.Services.CookieService CookieService
+@inject SupermarketWeb.Data.Services.GlobalService GlobalService
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        //await Js.InvokeVoidAsync("localStorage.clear");
+        await CookieService.EndSession("accessToken");
+        await CookieService.EndSession("refreshToken");
+        NavigationManager.NavigateTo(GlobalService.getLoginUrl(), true);
+    }
+}
+
